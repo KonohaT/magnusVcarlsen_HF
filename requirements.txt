@@ -1,2 +1,2 @@
 #To download requirements, use 'python -m pip install -r requirements.txt'
-#python-chess == 1.10.0
+#python-chess==1.10.0
