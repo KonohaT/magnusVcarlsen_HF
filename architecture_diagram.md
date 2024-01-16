@@ -4,22 +4,22 @@ config:
     flowchart:
         defaultRenderer: elk
 ---
-flowchart TB
+flowchart LR
 interface(Model \n Interface)
 model(Chosen Model)
-logger(Logger)
+logger("Logger\nget_stockfish_results()")
 coordinator(Game \n Coordinator)
 database("Game Database \n display_analytics()")
 
-coordinator --model_vs_model(model names)-->interface
-coordinator --human_vs_model(model name) -->interface
+coordinator --model_vs_model(model_1: str, model_2:str)-->interface
+coordinator --human_vs_model(model name: str) -->interface
 
 interface --send_move(model_name, UCI_notation) \n returns response-->model
 
-interface --create(model_names) \n creates a few logger for each game--> logger
-interface --new_move(FEN_notation)-->logger
-interface--cheated(model_name)-->logger
-interface--checkmate(winner)-->logger
+interface --create(model_1: str, model_2: str) \n creates a few logger for each game--> logger
+interface --add_legal_move(UCI_notation_of_game: str)-->logger
+interface--add_cheat(cheater_name: str)-->logger
+interface--add_checkmate(winner_name: str)-->logger
 
-logger --add_game(game_in_FEN, time_of_cheating)-->database
+logger --return_formatted_game(game_in_UCI: str, cheat_log: [int])-->database
 ```
