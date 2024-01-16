@@ -19,8 +19,8 @@ class logger:
         self.cheat_attempts[-1] += 1
 
     def add_checkmate(self, winner_name: str):
-        #logs the winner and stops recording
-        pass
+        self.winner = winner_name
+
 
     #Internal Work
     def get_stockfish_results(self, prev_state: str, current_state: str, depth: int = 5) -> float: #Takes current and previous FEN states. Can be refactored to only need one UCI current state
@@ -40,7 +40,7 @@ class logger:
 
         current_score = float(re.findall(r"-?\d*\.*\d+", current_string)[0]) #Positive means white is winning and vice versa
         prev_score = float(re.findall(r"-?\d*\.*\d+", prev_string)[0])
-        
+        #Add something to make sure it's that player's turn to make the move?
         
         return abs(current_score) - abs(prev_score) #Positive numbers mean the player that made the move is better off
     def format_game(self):
@@ -48,8 +48,7 @@ class logger:
 
     #Interface with game_database
     def return_formatted_game(self):
-        pass
-        """
+        
         if self.winner == "":
             raise RuntimeError("Game is not yet completed")
             pass
@@ -57,7 +56,6 @@ class logger:
         else:
             game = {"UCI": self.current_moves, "Cheat Attempts": self.cheat_attempts}
             return game
-        """
     
 #Testing section
 if __name__ == "__main__":
