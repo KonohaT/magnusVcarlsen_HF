@@ -1,25 +1,36 @@
 import requests
 import re
 
-class logger:
+class Logger:
     def __init__(self, model_1: str, model_2: str):
         self.model_1 = model_1
         self.model_2 = model_2
-
-    current_moves = "" #UCI notation
-    cheat_attempts = [0] #logs the number of cheat attempts for every move in order 
-    winner = ""
+        self.current_moves = ""
+        self.cheat_attempts = [0]
+        self.winner = ""
+        self.checkmate = False
 
     #Interface with the Model Interface
     def add_legal_move(self, current_moves: str): #current_moves should be all moves so far, in UCI notation
-        self.current_moves = current_moves
-        self.cheat_attempts.append(0)
-        
+        if self.checkmate:
+            raise RuntimeError("This game has already reached checkmate")
+        else: 
+            self.current_moves = current_moves
+            self.cheat_attempts.append(0)
+            
     def add_cheat(self, cheater_name: str):
-        self.cheat_attempts[-1] += 1
+        if self.checkmate:
+            raise RuntimeError("This game has already reached checkmate")
+        else: 
+            self.cheat_attempts[-1] += 1
 
     def add_checkmate(self, winner_name: str):
-        self.winner = winner_name
+        if winner_name != self.model_1 and winner_name != self.model_2:
+            raise RuntimeError("Not a valid winner for this logger")
+        else: 
+            self.winner = winner_name
+            self.checkmate = True
+
 
 
     #Internal Work
@@ -54,12 +65,16 @@ class logger:
             pass
 
         else:
-            game = {"UCI": self.current_moves, "Cheat Attempts": self.cheat_attempts}
+            game = {"Model 1": self.model_1, 
+                    "Model 2": self.model_2, 
+                    "Winner": self.winner, 
+                    "UCI": self.current_moves, 
+                    "Cheat Attempts": self.cheat_attempts}
             return game
     
 #Testing section
 if __name__ == "__main__":
-    new_logger = logger("ChessGPT", "ChatGPT")
+    new_logger = Logger("ChessGPT", "ChatGPT")
     current_board = "r2q1rk1/1pp2ppp/3bbn2/p2p4/8/1B1P4/PPP2PPP/RNB1QRK1 w - - 5 11" #make sure to include the additional notation at the end
     prev_board = "r2q1rk1/ppp2ppp/3bbn2/3p4/8/1B1P4/PPP2PPP/RNB1QRK1 w - - 5 11"
     print(str(new_logger.get_stockfish_results(prev_board, current_board)))
