@@ -2,7 +2,7 @@ import requests
 import re
 
 class Logger:
-    def __init__(self, model_1: str, model_2: str):
+    def __init__(self, model_1: str, model_2: str): #Model 1 should be white
         self.model_1 = model_1
         self.model_2 = model_2
         self.current_moves = ""
