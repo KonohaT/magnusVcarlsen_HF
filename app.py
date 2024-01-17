@@ -1,8 +1,5 @@
 import streamlit as st
 
-x = st.slider('Select a value')
-st.write(x, 'squared is', x * x)
-
 from transformers import pipeline
 generator2 = pipeline('text-generation', model='gpt2')
 
