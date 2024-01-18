@@ -8,7 +8,7 @@ generator = pipeline('text-generation', model='gpt2')
 
 def cleanup_output(text, prompt):
         section = text[len(prompt):len(prompt) + 7]
-        print("Proposed Move: %s" % section)
+        st.write("Proposed Move: " + section)
         valid_letters = ['A','a','B','b','C','c','D','d','E','e','F','f','G','g','H','h']
         valid_pieces = ['p','P','k','K','q','Q','r','R','b','B', 'n', 'N']
         valid_numbers = ['1','2','3','4','5','6','7','8']
@@ -79,39 +79,39 @@ class AInstance:
 
 def verify_move(string):
     board = chess.Board()
-    print("Board: %s" % string)
+    st.write("Board: " + string)
     for move in string.split():
       #if this move makes no sense it will return false and the game will try again to generate a good move
       try:
         board.push_san(move)
       except:
-        print("Invalid Move\n")
+        st.write("Invalid Move\n")
         return False
     if(board.is_valid):
-      print("Valid Move\n")
+      st.write("Valid Move\n")
       return True
     return False
 
 def check_mate(string):
   #simulates mate idk
     if(random.randrange(0,100) == 4):
-        print("H")
+        st.write("H")
         return True
     return False
 
 def print_game(string):
-    print("Some kind of visualization for the chess board based on this string: %s" % string)
+    st.write("Some kind of visualization for the chess board based on this string: " + string)
 
 def make_move(instance, game_state):
-    print("\n%s's move" % instance.type)
+    print("\n" + instance.type + "s's move")
     return_state = game_state
     return_state = instance.move(game_state)
     game_ongoing = True
     if(instance.check_if_end()):
-        print("This player claims countr > 50: %s" % instance.type)
+        st.write("This player claims countr > 50: " + instance.type)
         game_ongoing = False
     if(check_mate(return_state)):
-        print("This player claims mates: %s" % instance.type)
+        st.write("This player claims mates: " + instance.type)
         game_ongoing = False
     return(return_state, game_ongoing)
 
@@ -120,11 +120,11 @@ def main():
     if(random.randrange(0,1)):
         white = AInstance("gpt2", generator)
         black = AInstance("gpt2-medium-chess", generator2)
-        print("Gpt2 is White and Gpt2 Optimized is Black")
+        st.write("Gpt2 is White and Gpt2 Optimized is Black")
     else:
         white = AInstance("gpt2-medium-chess", generator2)
         black = AInstance("gpt2", generator)
-        print("Gpt2 is Black and Gpt2 Optimized is White")
+        st.write("Gpt2 is Black and Gpt2 Optimized is White")
 
     game_state = "e4 e5"
     game_ongoing = True
