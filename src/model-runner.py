@@ -1,27 +1,43 @@
 import chess
 import random
 
-def cleanup_output(text, prompt):
-        section = text[len(prompt):len(prompt) + 6]
-        #print("Section: %s" % section)
+def cleanup_output(text, prompt, extra_len):
+        section = text[len(prompt):]
+        print("Proposed Move: %s" % section)
         valid_letters = ['A','a','B','b','C','c','D','d','E','e','F','f','G','g','H','h']
         valid_pieces = ['p','P','k','K','q','Q','r','R','b','B', 'n', 'N']
         valid_numbers = ['1','2','3','4','5','6','7','8']
 
         #if there are any syntatically moves in this string for pieces
         countr = 0
-        while countr < 4:
+        while countr < len(section) - 3:
           if(section[countr] in valid_pieces and section[countr + 1] in valid_letters and section[countr + 2] in valid_numbers):
             #print(section[countr:countr+3])
             return ' ' + section[countr:countr+3]
           countr+=1
+        
+        #variant for capturing!
+        countr = 0
+        while countr < len(section) - 4:
+          if(section[countr] in valid_pieces and section[countr + 1] == 'x' and section[countr + 2] in valid_letters and section[countr + 3] in valid_numbers):
+            #print(section[countr:countr+3])
+            return ' ' + section[countr:countr+5]
+          countr+=1
 
         #same as moves but for pawns
         countr = 0
-        while countr < 5:
+        while countr < len(section) - 2:
           if(section[countr] in valid_letters and section[countr+1] in valid_numbers):
             #print(section[countr:countr+2])
             return ' ' + section[countr:countr+2]
+          countr+=1
+
+        #variant for capturing!
+        countr = 0
+        while countr < len(section) -4:
+          if(section[countr] in valid_letters and section[countr+1] == 'x' and section[countr+2] in valid_letters and section[countr + 3] in valid_numbers):
+            #print(section[countr:countr+2])
+            return ' ' + section[countr:countr+4]
           countr+=1
         
         return ' e8'
@@ -34,14 +50,16 @@ class AInstance:
 
     #All this does it take the gamestate and add the ai-generated result to it
     def move(self, game_state):
-        if(type == "BlueSunflower/gpt2-medium-chess"):
+        if(self.type == "gpt2-medium-chess"):
             prompt = "1-0 2700 1350 " + game_state
+            extra_len = 7
         else:
             prompt = game_state
+            extra_len = 5
         countr = 0
         while True:
-            generated_text = self.generator(prompt, max_length=len(prompt) + 10, num_return_sequences=1)[0]['generated_text']
-            selected_move = cleanup_output(generated_text, prompt)
+            generated_text = self.generator(prompt, max_length=len(prompt) + extra_len, num_return_sequences=1)[0]['generated_text']
+            selected_move = cleanup_output(generated_text, prompt, extra_len)
             
             #if this move is valid then return it
             proposed_board = game_state + selected_move
@@ -58,7 +76,7 @@ class AInstance:
 
 def verify_move(string):
     board = chess.Board()
-    print("Board: %s" % string)
+    print("Board: %s\n" % string)
     for move in string.split():
       #if this move makes no sense it will return false and the game will try again to generate a good move
       try:
@@ -85,7 +103,7 @@ def make_move(instance, game_state):
     return_state = instance.move(game_state)
     game_ongoing = True
     if(instance.check_if_end()):
-        print("This player claims countr > 50: %s" % instance.type)
+        print("This player claims they can't make a valid move after 50 tries: %s" % instance.type)
         game_ongoing = False
     if(check_mate(return_state)):
         print("This player claims mates: %s" % instance.type)
@@ -94,14 +112,14 @@ def make_move(instance, game_state):
 
 
 def main():
-    if(random.randrange(0,1)):
+    if(random.randint(0,1) == 1):
         white = AInstance("gpt2", generator)
         black = AInstance("gpt2-medium-chess", generator2)
-        print("Gpt2 is White and Gpt2 Optimized is Black")
+        print("Gpt2 is White and Gpt2 Optimized is Black\n")
     else:
         white = AInstance("gpt2-medium-chess", generator2)
         black = AInstance("gpt2", generator)
-        print("Gpt2 is Black and Gpt2 Optimized is White")
+        print("Gpt2 is Black and Gpt2 Optimized is White\n")
 
     game_state = "e4 e5"
     game_ongoing = True
