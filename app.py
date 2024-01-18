@@ -3,9 +3,6 @@ import random
 import streamlit as st
 from transformers import pipeline
 
-generator2 = pipeline('text-generation', model='BlueSunflower/gpt2-medium-chess')
-generator = pipeline('text-generation', model='gpt2')
-
 def cleanup_output(text, prompt, extra_len):
         section = text[len(prompt):]
         st.write("Proposed Move: " + section)
@@ -117,6 +114,9 @@ def make_move(instance, game_state):
 
 
 def main():
+    generator2 = pipeline('text-generation', model='BlueSunflower/gpt2-medium-chess')
+    generator = pipeline('text-generation', model='gpt2')
+    
     if(random.randint(0,1) == 1):
         white = AInstance("gpt2", generator)
         black = AInstance("gpt2-medium-chess", generator2)
