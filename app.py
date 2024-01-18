@@ -1,6 +1,10 @@
 import chess
 import random
 import streamlit as st
+from transformers import pipeline
+
+generator2 = pipeline('text-generation', model='BlueSunflower/gpt2-medium-chess')
+generator = pipeline('text-generation', model='gpt2')
 
 def cleanup_output(text, prompt, extra_len):
         section = text[len(prompt):]
