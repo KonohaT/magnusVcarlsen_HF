@@ -3,6 +3,9 @@ import random
 import streamlit as st
 from transformers import pipeline
 
+generator2 = pipeline('text-generation', model='BlueSunflower/gpt2-medium-chess')
+generator = pipeline('text-generation', model='gpt2')
+
 def cleanup_output(text, prompt):
         section = text[len(prompt):len(prompt) + 7]
         print("Proposed Move: %s" % section)
