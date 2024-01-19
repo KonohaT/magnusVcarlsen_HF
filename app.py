@@ -138,6 +138,7 @@ def main():
 
     game_state = "e4 e5"
     game_ongoing = True
+    """
     while game_ongoing:
         game_state, game_ongoing = make_move(white, game_state)
         onetime_logger.add_legal_move(game_state)
@@ -149,11 +150,10 @@ def main():
         if not game_ongoing:
             #print_game(game_state)
             break
-    
+    """
     finished_game = onetime_logger.return_formatted_game()
     onetime_db = GameDatabase()
     onetime_db.add_game(finished_game)
-    onetime_db.display_tournament
 
     onetime_db.display_tournament()
 if __name__ == "__main__":
