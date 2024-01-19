@@ -138,8 +138,9 @@ def main():
 
     game_state = "e4 e5"
     game_ongoing = True
-    """
+    
     while game_ongoing:
+        moves = 0
         game_state, game_ongoing = make_move(white, game_state)
         onetime_logger.add_legal_move(game_state)
         if not game_ongoing:
@@ -150,7 +151,12 @@ def main():
         if not game_ongoing:
             print_game(game_state)
             break
-    """
+        
+        #testing code
+        moves += 1
+        if moves > 3:
+           break
+    
     onetime_logger.add_checkmate(player_1) #here for testing purposes
     finished_game = onetime_logger.return_formatted_game()
     onetime_db = GameDatabase()
