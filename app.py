@@ -154,7 +154,7 @@ def main():
         
         #testing code
         moves += 1
-        if moves > 3:
+        if moves >= 1:
            break
     
     onetime_logger.add_checkmate(player_1) #here for testing purposes
