@@ -1,7 +1,11 @@
+
 import chess
 import random
 import streamlit as st
 from transformers import pipeline
+
+from game_database import GameDatabase
+from logger import Logger
 
 generator2 = pipeline('text-generation', model='BlueSunflower/gpt2-medium-chess')
 generator = pipeline('text-generation', model='gpt2')
@@ -77,7 +81,7 @@ class AInstance:
     def check_if_end(self):
         return self.game_end
 
-def verify_move(string):
+def verify_move(string): #Given all moves so far, this checks if any moves are illegal.
     board = chess.Board()
     st.write("Board: " + string)
     for move in string.split():
@@ -92,7 +96,7 @@ def verify_move(string):
       return True
     return False
 
-def check_mate(string):
+def check_mate(string): #Am confusion
   #simulates mate idk
     if(random.randrange(0,100) == 4):
         st.write("H")
@@ -117,24 +121,40 @@ def make_move(instance, game_state):
 
 
 def main():
+    
+    player_1 = "gpt2"
+    player_2 = "gpt2-medium-chess"
+
     if(random.randrange(0,1)):
-        white = AInstance("gpt2", generator)
-        black = AInstance("gpt2-medium-chess", generator2)
+        white = AInstance(player_1, generator)
+        black = AInstance(player_2, generator2)
         st.write("Gpt2 is White and Gpt2 Optimized is Black")
     else:
-        white = AInstance("gpt2-medium-chess", generator2)
-        black = AInstance("gpt2", generator)
+        white = AInstance(player_2, generator2)
+        black = AInstance(player_1, generator)
         st.write("Gpt2 is Black and Gpt2 Optimized is White")
+
+    onetime_logger = Logger(white.type, black.type) #Logger.model_1 should be white and vice versa
 
     game_state = "e4 e5"
     game_ongoing = True
     while game_ongoing:
         game_state, game_ongoing = make_move(white, game_state)
+        onetime_logger.add_legal_move(game_state)
         if not game_ongoing:
-            print_game(game_state)
+            #print_game(game_state)
             break
         game_state, game_ongoing = make_move(black, game_state)
+        onetime_logger.add_legal_move(game_state)
         if not game_ongoing:
-            print_game(game_state)
+            #print_game(game_state)
             break
-main()
+    
+    finished_game = onetime_logger.return_formatted_game()
+    onetime_db = GameDatabase()
+    onetime_db.add_game(finished_game)
+    onetime_db.display_tournament
+
+    onetime_db.display_tournament()
+if __name__ == "__main__":
+   main()

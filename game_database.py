@@ -1,6 +1,7 @@
 import chess
 import matplotlib.pyplot as plt
 import pandas as pd
+import streamlit as st
 from typing import Dict
 from logger import Logger
 
@@ -23,9 +24,16 @@ class GameDatabase:
         #bar chart of tournament winrates
         win_results = df["Winner"].value_counts()
         print(win_results.rank())
-        win_results.plot.bar()
-        plt.show()
-        pass
+
+        names = ["steve", "bob", "emily"]
+        nums = [1,2,3]
+
+        fig, axs = plt.subplots(2,1)
+        axs[0].plot(names, nums)
+        axs[1].bar(names, nums)
+        st.pyplot(fig)
+        
+        
 
 if __name__ == "__main__":
     test_logger = Logger("ChessGPT", "ChatGPT")
