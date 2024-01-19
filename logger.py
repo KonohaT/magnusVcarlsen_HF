@@ -1,14 +1,22 @@
 import requests
 import re
+import time
 
 class Logger:
     def __init__(self, model_1: str, model_2: str): #Model 1 should be white
         self.model_1 = model_1
         self.model_2 = model_2
         self.current_moves = ""
+
         self.cheat_attempts = [0]
+
         self.winner = ""
         self.checkmate = False
+
+        self.seconds_per_move = []
+        self.prev_end_time = time.time()
+
+        self.stockfish_results = []
 
     #Interface with the Model Interface
     def add_legal_move(self, current_moves: str): #current_moves should be all moves so far, in UCI notation
@@ -17,6 +25,10 @@ class Logger:
         else: 
             self.current_moves = current_moves
             self.cheat_attempts.append(0)
+
+            current_time = time.time()
+            self.seconds_per_move.append(current_time - self.prev_end_time)
+            self.prev_end_time = current_time
             
     def add_cheat(self, cheater_name: str):
         if self.checkmate:
@@ -69,7 +81,9 @@ class Logger:
                     "Model 2": self.model_2, 
                     "Winner": self.winner, 
                     "UCI": self.current_moves, 
-                    "Cheat Attempts": self.cheat_attempts}
+                    "Cheat Attempts": self.cheat_attempts,
+                    "Seconds Per Move": self.seconds_per_move,
+                    "Stockfish Results": self.stockfish_results}
             return game
     
 #Testing section

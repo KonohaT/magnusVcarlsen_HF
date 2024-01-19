@@ -143,18 +143,19 @@ def main():
         game_state, game_ongoing = make_move(white, game_state)
         onetime_logger.add_legal_move(game_state)
         if not game_ongoing:
-            #print_game(game_state)
+            print_game(game_state)
             break
         game_state, game_ongoing = make_move(black, game_state)
         onetime_logger.add_legal_move(game_state)
         if not game_ongoing:
-            #print_game(game_state)
+            print_game(game_state)
             break
     """
+    onetime_logger.add_checkmate(player_1) #here for testing purposes
     finished_game = onetime_logger.return_formatted_game()
     onetime_db = GameDatabase()
     onetime_db.add_game(finished_game)
 
-    onetime_db.display_tournament()
+    onetime_db.display_game(0)
 if __name__ == "__main__":
    main()
